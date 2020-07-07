@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="boardMapper">
+   <!-- 게시판 글 작성 -->
+   <insert id="insert">
+	   	INSERT INTO mp_board(bno,title,subject,writer)
+	   	VALUES(mp_board_seq.nextval,#{title},#{subject},#{writer})
+   </insert>
+   
+   <!-- 게시판 목록 -->
+   <select id="list" resultType="kr.co.vo.BoardVO">
+   		select bno, title, writer,regdate
+   		  from mp_board
+   		 order by bno desc
+   </select>
+   
+   <!-- 게시판 조회 -->
+   <select id="read" parameterType="int" resultType="kr.co.vo.BoardVO">
+   		select bno,title,subject,writer,regdate
+   		  from mp_board
+   		 where bno=#{bno}
+   </select>
+   
+   <!-- 게시판 수정 -->
+   <update id="update" parameterType="kr.co.vo.BoardVO">
+   		update mp_board
+   		   set title = #{title},
+   		   	   subject = #{subject}
+   		  where bno = #{bno}
+   </update>
+   
+   <!-- 게시판 삭제 -->
+   <delete id="delete" parameterType="int">
+   		delete
+   		  from mp_board
+   		 where bno = #{bno}
+   </delete>
+   
+   <!-- 게시글 페이징 처리 -->
+   <select id="listPage" resultType="kr.co.vo.BoardVO" parameterType="kr.co.vo.Criteria">
+	   	select bno,
+	       title,
+	       subject,
+	       writer,
+	       regdate
+	  from (
+	        select bno,
+	               title,
+	               subject,
+	               writer,
+	               regdate,
+	               row_number() over(order by bno desc) as rNum
+	        from mp_board 
+	        where 1=1
+	        <include refid="search"></include>
+	        )mp
+	 where rNum between #{rowStart} and #{rowEnd}
+	 order by bno desc
+   </select>
+   
+   <!-- 게시글 갯수 -->
+   <select id="listCount" resultType="int">
+   			select count(bno)
+   			  from mp_board
+   			  where 1=1
+   			  <include refid="search"></include>
+   			  and bno > 0
+   </select>
+   
+   <!-- 검색 -->
+   <sql id="search">
+   		<if test="searchType != null">
+   			<if test="searchType == 't'.toString()">AND TITLE LIKE '%' || #{keyword} || '%'</if>
+			<if test="searchType == 's'.toString()">AND subject LIKE '%' || #{keyword} || '%'</if>
+			<if test="searchType == 'w'.toString()">AND WRITER LIKE '%' || #{keyword} || '%'</if>
+			<if test="searchType == 'ts'.toString()">AND (TITLE LIKE '%' || #{keyword} || '%') or (subject LIKE '%' || #{keyword} || '%')</if>
+   		</if>
+   </sql>
+</mapper>
