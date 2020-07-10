@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="memberMapper">
+	<!-- 회원가입 -->
+	<insert id="register">
+		insert into mp_member(userId,userPass,userName)
+		values (#{userId},#{userPass},#{userName})
+	</insert>
+	
+	<!-- 로그인 -->
+	<select id="login" resultType="kr.co.vo.MemberVO">
+		select userId,userPass,userName
+		  from mp_member
+		 where userId=#{userId}
+		<!--    and userPass=#{userPass} -->
+	</select>
+	
+	<!-- 회원정보 수정 -->
+	<update id="memberUpdate">
+		update mp_member set
+		<!-- userPass = #{userPass}, -->
+		userName = #{userName}
+		where userId = #{userId}
+	</update>
+	
+	<!-- 회원탈퇴 -->
+	<delete id="memberDelete">
+		delete from mp_member
+		 where userId = #{userId}
+		   and userPass=#{userPass}
+	</delete>
+	
+	<!-- 패스워드 체크 -->
+	<select id="passChk" resultType="int">
+		select count(*) from mp_member
+		 where userId = #{userId}
+		  <!--  and userPass = #{userPass} -->
+	</select>
+	
+	<!-- 아이디 중복체크 -->
+	<!-- 아이디를 조건으로 카운트를 하는데 아이디가 있으면 count가 1없으면 0이 조회된다. 조회 결과 타입을 resultType="int"로 설정한다 -->
+	<select id="idChk" resultType="int">
+		select count(*) from mp_member
+		 where userId = #{userId}
+	</select>
+</mapper>

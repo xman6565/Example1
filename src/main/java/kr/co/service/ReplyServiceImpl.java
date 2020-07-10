@@ -27,4 +27,20 @@ public class ReplyServiceImpl implements ReplyService{
 		rdao.writeReply(rvo);
 	}
 
+	// 댓글 수정
+	@Override
+	public void updateReply(ReplyVO rvo) throws Exception {
+		rdao.updateReply(rvo);
+	}
+
+	@Override
+	public void deleteReply(ReplyVO rvo) throws Exception {
+		rdao.deleteReply(rvo);
+	}
+
+	@Override
+	public ReplyVO selectReply(int rno) throws Exception {
+		return rdao.selectReply(rno);
+	}
+
 }

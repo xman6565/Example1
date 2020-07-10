@@ -1,9 +1,15 @@
 package kr.co.controller;
 
+import java.io.File;
+import java.net.URLEncoder;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -11,6 +17,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import kr.co.service.BoardService;
@@ -41,8 +49,9 @@ public class BoardController {
 	
 	// 게시판 글 작성
 	@RequestMapping(value="/board/write", method = RequestMethod.POST)
-	public String write(BoardVO boardVO) throws Exception{
-		service.write(boardVO);
+	public String write(BoardVO boardVO, MultipartHttpServletRequest mpRequest) throws Exception{
+
+		service.write(boardVO,mpRequest);
 		
 		return "redirect:/board/list";
 	}
@@ -82,6 +91,8 @@ public class BoardController {
 		List<ReplyVO> replyList = replyService.readReply(boardVO.getBno());
 		model.addAttribute("replyList",replyList);
 		
+		List<Map<String,Object>> fileList = service.selectFileList(boardVO.getBno());
+		model.addAttribute("file",fileList);
 		return "board/readView";
 	}
 	
@@ -124,5 +135,95 @@ public class BoardController {
 		rttr.addAttribute("keyword",scri.getKeyword());
 		
 		return "redirect:/board/list";
+	}
+	
+	// 댓글 작성
+	@RequestMapping(value="/replyWrite", method=RequestMethod.POST)
+	public String replyWrite(ReplyVO rvo, SearchCriteria scri, RedirectAttributes rttr) throws Exception{
+		logger.info("reply Write");
+		
+		replyService.writeReply(rvo);
+		
+		rttr.addAttribute("bno", rvo.getBno());
+		rttr.addAttribute("page", scri.getPage());
+		rttr.addAttribute("perPageNum", scri.getPerPageNum());
+		rttr.addAttribute("searchType", scri.getSearchType());
+		rttr.addAttribute("keyword", scri.getKeyword());
+		
+		return "redirect:/board/readView";
+	}
+	
+	// 댓글 수정 GET
+	@RequestMapping(value="/replyUpdateView", method=RequestMethod.GET)
+	public String replyUpdateView(ReplyVO rvo, SearchCriteria scri, Model model) throws Exception{
+		logger.info("replyUpdateView");
+		
+		model.addAttribute("replyUpdate", replyService.selectReply(rvo.getRno()));
+		model.addAttribute("scri",scri);
+		
+		return "board/replyUpdateView";
+	}
+	
+	// 댓글 수정 POST
+	@RequestMapping(value="/replyUpdate", method=RequestMethod.POST)
+	public String replyUpdate(ReplyVO rvo, SearchCriteria scri, RedirectAttributes rttr) throws Exception{
+		logger.info("replyUpdate");
+		
+		replyService.updateReply(rvo);
+		
+		rttr.addAttribute("bno",rvo.getBno());
+		rttr.addAttribute("page",scri.getPage());
+		rttr.addAttribute("perPageNum",scri.getPerPageNum());
+		rttr.addAttribute("searchType", scri.getSearchType());
+		rttr.addAttribute("keyword",scri.getKeyword());
+		
+		return "redirect:/board/readView";
+	}
+	
+	// 댓글 삭제 GET
+	@RequestMapping(value="/replyDeleteView", method=RequestMethod.GET)
+	public String replyDeleteView(ReplyVO rvo, SearchCriteria scri, Model model) throws Exception{
+		logger.info("replyDeleteView");
+		
+		model.addAttribute("replyDelete", replyService.selectReply(rvo.getRno()));
+		model.addAttribute("scri",scri);
+		
+		return "board/replyDeleteView";
+	}
+	
+	// 댓글 삭제 POST
+	@RequestMapping(value="/replyDelete", method=RequestMethod.POST)
+	public String replyDelete(ReplyVO rvo, SearchCriteria scri, RedirectAttributes rttr) throws Exception{
+		logger.info("replyDelete");
+		
+		replyService.deleteReply(rvo);
+		
+		rttr.addAttribute("bno",rvo.getBno());
+		rttr.addAttribute("page",scri.getPage());
+		rttr.addAttribute("perPageNum", scri.getPerPageNum());
+		rttr.addAttribute("searchType", scri.getSearchType());
+		rttr.addAttribute("keyword",scri.getKeyword());
+		
+		return "redirect:/board/readView";
+	}
+	
+	// 첨부파일 다운
+	@RequestMapping(value="fileDown")
+	public void fileDown(@RequestParam Map<String, Object> map, HttpServletResponse response) throws Exception{
+		Map<String,Object> resultMap = service.selectFileInfo(map);
+		System.out.println("resultMap : " + resultMap);
+		String storedFileName = (String) resultMap.get("STORED_FILE_NAME");
+		System.out.println("storedFileName : " + storedFileName);
+		String originalFileName = (String) resultMap.get("ORG_FILE_NAME");
+		System.out.println("originalFileName : " + originalFileName);
+		// 파일을 저장했던 위치에서 첨부파일을 읽어 byte[] 형식으로 변환한다.
+		byte fileByte[] = FileUtils.readFileToByteArray(new File("C:\\Users\\nuriapp\\eclipse-workspace\\file\\" + storedFileName));
+		
+		response.setContentType("applcation/octet-stream");
+		response.setContentLength(fileByte.length);
+		response.setHeader("Content-Disposition", "attachment; fileName=\""+URLEncoder.encode(originalFileName, "UTF-8")+"\";");
+		response.getOutputStream().write(fileByte);
+		response.getOutputStream().flush();
+		response.getOutputStream().close();
 	}
 }

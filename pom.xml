@@ -154,6 +154,53 @@
             <version>1.3.2</version>
         </dependency>
 		
+		<dependency>
+	       <groupId>org.codehaus.jackson</groupId>
+	       <artifactId>jackson-mapper-asl</artifactId>
+	       <version>1.9.13</version>
+		</dependency>
+		
+		<dependency>
+	        <groupId>org.codehaus.jackson</groupId>
+	        <artifactId>jackson-core-asl</artifactId>
+	        <version>1.9.13</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-databind</artifactId>
+		    <version>2.10.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-web -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-web</artifactId>
+		    <version>5.1.8.RELEASE</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-config -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-config</artifactId>
+		    <version>5.1.8.RELEASE</version>
+		</dependency>
+		
+		<!-- 첨부파일 START-->
+		<!-- MultipartHttpServletRequset -->
+		 <dependency>
+			 <groupId>commons-io</groupId>
+			 <artifactId>commons-io</artifactId>
+			 <version>2.0.1</version>
+		 </dependency>
+		 
+		 <dependency>
+			 <groupId>commons-fileupload</groupId>
+			 <artifactId>commons-fileupload</artifactId>
+			 <version>1.2.2</version>
+		 </dependency>
+		
+		<!-- 첨부파일 END -->
+		
 		<!-- Test -->
 		<dependency>
 			<groupId>junit</groupId>

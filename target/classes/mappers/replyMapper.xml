@@ -16,4 +16,24 @@
 		insert into mp_reply(bno,rno,subject,writer)
 		values (#{bno},mp_reply_seq.nextval,#{subject},#{writer})
 	</insert>
+	
+	<!-- 댓글 수정 -->
+	<update id="updateReply" parameterType="kr.co.vo.ReplyVO">
+		update mp_reply set subject = #{subjcet}
+		where rno = #{rno}
+	</update>
+	
+	<!-- 댓글 삭제 -->
+	<delete id="deleteReply" parameterType="kr.co.vo.ReplyVO">
+		delete from mp_reply
+		 where rno = #{rno}
+	</delete>
+	
+	<!-- 선택된 댓글 조회 -->
+	<select id="selectReply" resultType="kr.co.vo.ReplyVO">
+		select bno,rno,subject,writer,regdate
+		  from mp_reply
+		 where rno = #{rno}	
+	</select>
+	
 </mapper>
