@@ -103,22 +103,22 @@
 						<input type="hidden" id="perPageNum" name="perPageNum" value="${scri.perPageNum}"/>
 						<input type="hidden" id="searchType" name="searchType" value="${scri.searchType}"/>
 						<input type="hidden" id="keyword" name="keyword" value="${scri.keyword}"/>
-						<input type="hidden" id="File_no" name="File_no" value=""/>
+						<input type="hidden" id="FILE_NO" name="FILE_NO" value=""/>
 				</form>
 					
 				<div class="form-group">
-					<label for="title">제목</label>
+					<label for="title" class="col-sm-2 control-label">제목</label>
 					<input type="text" id="title" name="title" value="${read.title}"  readonly="readonly"/>
 				</div>
 				
 				<div class="form-group">
-					<label for="subject">내용</label>
+					<label for="subject" class="col-sm-2 control-label">내용</label>
 					<textarea id="subject" name="subject" readonly="readonly"><c:out value="${read.subject}" /></textarea>
 				</div>
-					<label for="writer">작성자</label>
+					<label for="writer" class="col-sm-2 control-label">작성자</label>
 					<input type="text" id="writer" name="writer" value="${read.writer}"  readonly="readonly"/>
 				<div class="form-group">
-					<label for="regdate">작성날짜</label>
+					<label for="regdate" class="col-sm-2 control-label">작성날짜</label>
 					<fmt:formatDate value="${read.regdate}" pattern="yyyy-MM-dd"/>
 				</div>	
 				<hr>
@@ -164,14 +164,14 @@
 					<div class="form-group">
 						<label for="writer" class="col-sm-2 control-label">댓글 작성자</label>
 						<div class="col-sm-10">					
-							<input type="text" id="writer" name="writer"/>
+							<input type="text" id="writer" name="writer" class="form-control"/>
 						</div>
 					</div>
 					
 					<div class="form-group">
 						<label for="subject" class="col-sm-2 control-label">댓글 내용</label>
 						<div class="col-sm-10">
-							<input type="text" id="subject" name="subject"/>
+							<input type="text" id="subject" name="subject" class="form-control"/>
 						</div>
 					</div>
 					

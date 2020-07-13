@@ -36,6 +36,7 @@
 						<th>제목</th>
 						<th>작성자</th>
 						<th>등록일</th>
+						<th>조회수</th>
 					</tr>
 					<c:forEach items="${list}" var="list">
 						<tr>
@@ -47,6 +48,7 @@
 														keyword=${scri.keyword}"><c:out value="${list.title}"/></a></td>
 							<td><c:out value="${list.writer}"/></td>
 							<td><fmt:formatDate value="${list.regdate}" pattern="yyyy-MM-dd"/></td>
+							<td><c:out value="${list.hit}"/></td>
 						</tr>
 					</c:forEach>
 				</table>
@@ -79,7 +81,7 @@
     				</script>
 				</div>
 				<div class="col-md-offset-3">
-				  <ul>
+				  <ul class="pagination">
 				    <c:if test="${pageMaker.prev}">
 				    	<li><a href="list${pageMaker.makeSearch(pageMaker.startPage - 1)}">이전</a></li>
 				    </c:if> 
